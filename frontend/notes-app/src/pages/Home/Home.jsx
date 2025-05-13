@@ -17,6 +17,9 @@ const Home = () => {
   const [userInfo, setUserInfo] = useState(null)
   const navigate = useNavigate();
 
+  const [allNotes, setAllNotes] = useState([])
+  
+
   //getting user info;
   const getUserInfo = async () => {
     try{
@@ -33,7 +36,24 @@ const Home = () => {
     }
   };
 
+  //getting all notes
+  const getAllNotes = async () => {
+    try{
+      const response = await axiosInstance.get("/get-notes");
+
+      if(response.data && response.data.notes){
+        setAllNotes(response.data.notes)
+      }
+    }
+    catch(error){
+      console.log("An unexpected error occured, Please try again later");
+      
+    }
+  }
+
+
   useEffect(() => {
+    getAllNotes();
     getUserInfo();
     return () => {}
   }, []);
@@ -45,16 +65,20 @@ const Home = () => {
 
       <div className="container ml-8">
         <div className='grid grid-cols-3 gap-2 mt-4'>
-          <NoteCard 
-            title="India war"
-            date="7 May 2025"
-            content="India fires at Porkistan"
-            tags="#war"
-            isPinned={true}
+          {allNotes.map((item, index) => (
+            <NoteCard 
+            key={item._id}
+            title={item.title}
+            date={item.createdOn}
+            content={item.content}
+            tags={item.tags}
+            isPinned={item.isPinned}
             onEdit={() => {}}
             onDelete={() => {}}
             onPinNote={() => {}}
             />
+          ))} 
+          
 
         </div>
       </div>
@@ -86,6 +110,7 @@ const Home = () => {
           onClose={()=>{
             setOpenAddEditModal({ isShown:false, type: "add", data: null})
           }}
+          getAllNotes={getAllNotes}
         />
       </Modal >
     </>
