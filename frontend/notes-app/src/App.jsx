@@ -4,6 +4,10 @@ import {BrowserRouter as Router, Route, Routes} from 'react-router-dom'
 import Login from './pages/Login/Login'
 import SignUp from './pages/SignUp/SignUp'
 
+import Modal from 'react-modal';
+
+// Set the app element to the root div
+Modal.setAppElement('#root');
 const routes = (
   <Router>
     <Routes>
