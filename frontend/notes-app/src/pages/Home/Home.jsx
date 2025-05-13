@@ -6,6 +6,7 @@ import AddEditNotes from './AddEditNotes'
 import Modal from 'react-modal'
 import { useNavigate } from 'react-router-dom'
 import axiosInstance from '../../utils/axiosInstance'
+import Toast from '../../components/ToastMessage/Toast'
 const Home = () => {
 
   const [openAddEditModal, setOpenAddEditModal] = useState({
@@ -14,12 +15,36 @@ const Home = () => {
     type: "add",
   });
 
+  //showing toast message
+  const [showToastMsg, setShowToastMsg] = useState({
+    isShown: false,
+    message: "",
+    type: "add",
+  });
+
+  const handleCloseToast = () =>{
+    setShowToastMsg({
+      isShown: false,
+      message: "",
+    })
+  }
+
+  const showToastMesage = (message, type) => {
+    setShowToastMsg({
+      isShown: true,
+      message,
+      type
+    })
+  }
+
   const [userInfo, setUserInfo] = useState(null)
   const navigate = useNavigate();
 
   const [allNotes, setAllNotes] = useState([])
   
-
+  const handleEdit = (noteDetails) => {
+    setOpenAddEditModal({ isShown: true, data: noteDetails, type:"edit"})
+  }
   //getting user info;
   const getUserInfo = async () => {
     try{
@@ -64,7 +89,7 @@ const Home = () => {
       <Navbar userInfo={userInfo} />
 
       <div className="container ml-8">
-        <div className='grid grid-cols-3 gap-2 mt-4'>
+        <div className='grid grid-cols-2 gap-2 mt-4'>
           {allNotes.map((item, index) => (
             <NoteCard 
             key={item._id}
@@ -73,7 +98,7 @@ const Home = () => {
             content={item.content}
             tags={item.tags}
             isPinned={item.isPinned}
-            onEdit={() => {}}
+            onEdit={() => handleEdit(item)}
             onDelete={() => {}}
             onPinNote={() => {}}
             />
@@ -113,6 +138,13 @@ const Home = () => {
           getAllNotes={getAllNotes}
         />
       </Modal >
+
+      <Toast
+        isShown={showToastMsg.isShown}
+        message={showToastMsg.message}
+        type={showToastMsg.type}
+        onClose={handleCloseToast}
+      />
     </>
   )
 }
