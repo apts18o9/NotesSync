@@ -3,18 +3,20 @@ import { LuCheck } from "react-icons/lu"
 import { MdDeleteOutline } from 'react-icons/md'
 const Toast = ({ isShown, message, type, onClose }) => {
 
-  useEffect(()=> {
-    const timeoutId = setTimeout(()=>{
-      onClose();
-    }, 3000);
-    return () =>{
-      clearTimeout(timeoutId)
-    }
-  }, [onClose])
+  useEffect(() => {
+  if (!isShown) return;
+  const timeoutId = setTimeout(() => {
+    onClose();
+  }, 3000);
+  return () => {
+    clearTimeout(timeoutId);
+  };
+}, [isShown, onClose]);
+
 
   return (
     <div
-    className={`absolute top-20 right-6 transition-all duration-400 ${isShown ? "opactiy-100" : "opacity-0"}`}>
+    className={`absolute top-20 right-6 transition-all duration-400 ${isShown ? "opacity-100" : "opacity-0"}`}>
       <div 
         className={`min-w-52 bg-white border shadow-2xl rounded-md after:w-[5px] after:h-full 
         ${type === "delete" ? "after: bg-red-500" : "after: bg-green-500"} after:absolute after: left-0

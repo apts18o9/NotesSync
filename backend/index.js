@@ -328,6 +328,8 @@ app.delete("/delete-all-notes", authenticateToken, async (req, res) => {
 
     try {
         const result = await Note.deleteMany({ userId: userId });
+        // console.log("deleteing notes", userId);
+        
         return res.json({
             error: false,
             message: `${result.deletedCount} notes deleted successfully`,
