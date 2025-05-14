@@ -217,11 +217,13 @@ app.put("/edit-note/:noteId", authenticateToken, async (req, res) => {
 
 //fetch all notes api
 app.get("/get-notes/", authenticateToken, async (req, res) => {
-    const user = req.user;
+    const user = req.user
 
     try{
         const notes = await Note.find({userId: user._id}).sort({isPinned: -1});
-
+        // console.log("fetching notes for userid", user)
+        console.log("notes", notes);
+        
         return res.json({
             error: false,
             notes,
@@ -317,6 +319,39 @@ app.get("/get-user", authenticateToken, async (req, res) => {
     }
     
 });
+
+
+//to delete every note
+app.delete("/delete-all-notes", authenticateToken, async (req, res) => {
+    // If your JWT payload is { user: { _id: ... } }
+    const userId = req.user.user ? req.user.user._id : req.user._id;
+
+    try {
+        const result = await Note.deleteMany({ userId: userId });
+        return res.json({
+            error: false,
+            message: `${result.deletedCount} notes deleted successfully`,
+        });
+    } catch (err) {
+        return res.status(500).json({ error: true, message: "Internal Server Error" });
+    }
+});
+
+
+// app.delete("/delete-all-notes", authenticateToken, async (res, req) => {
+//     const userId = req.user;
+
+//     try{
+//         const result = await Note.deleteMany({userId: userId});
+
+//         return res.json({
+//             error: false,
+//             message: `${result.deletedCount} notes deleted`,
+//         })
+//     }catch(err){
+//         return res.status(500).json({error: true, message: "inter"})
+//     }
+// })
 app.listen(8000);
 
 module.exports = app;
