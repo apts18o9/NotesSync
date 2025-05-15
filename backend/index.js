@@ -339,6 +339,43 @@ app.delete("/delete-all-notes", authenticateToken, async (req, res) => {
     }
 });
 
+//to search note via tag
+app.get("/search-notes", authenticateToken, async (req, res)=> {
+     const userId = req.user.user ? req.user.user._id : req.user._id;
+     const query = req.query.q;
+    //  console.log("req.query:", req.query);
+    //  console.log("Query value before check:", query, "| Length:", query.length);
+
+
+     if(!query){
+        return res.status(400).json({error: true, message: "Search query is requird"});
+     }
+
+     try{
+        const matchingNotes = await Note.find({
+            userId: userId._id,
+            $or: [
+                { title: { $regex: new RegExp(query, "i") } },
+                { content: {$regex: new RegExp(query, "i" ) } }, 
+            ],
+        }
+        )
+        // console.log("macthing notes", matchingNotes);
+        
+
+        return res.json({
+            error: false,
+            notes: matchingNotes,
+            message: "Notes matching search query retrieved successfully"
+        })
+
+     }catch(error){
+        console.log("notes e");
+        
+        return res.status(500).json({error: true, message: "Internal Server Error"})
+     }
+})
+
 
 // app.delete("/delete-all-notes", authenticateToken, async (res, req) => {
 //     const userId = req.user;

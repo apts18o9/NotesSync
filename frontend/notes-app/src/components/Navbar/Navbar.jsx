@@ -2,8 +2,8 @@ import React, {useState} from 'react'
 import ProfileInfo from '../Cards/ProfileInfo'
 import { useNavigate } from 'react-router-dom'
 import SearchBar from '../SearchBar/SearchBar';
-const Navbar = ({userInfo}) => {
-
+const Navbar = ({userInfo, onSearchNote}) => {
+    
     const [searchQuery, setSearchQuery] = useState("")
     const navigate = useNavigate();
     const onLogout = () => {
@@ -12,13 +12,16 @@ const Navbar = ({userInfo}) => {
     }
 
     const handleSearch = () => {
-        //add
-        console.log("clikced glass");
+        if(searchQuery){
+            onSearchNote(searchQuery);
+        }
+        // console.log("clikced glass");
         
     };
 
     const onClearSearch = () => {
         setSearchQuery("");
+        navigate("/dashboard");
     }
 
   return (
